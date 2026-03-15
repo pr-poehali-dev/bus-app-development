@@ -1,16 +1,11 @@
 import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 
-const fleet = [
-  { id: 1, reg: 'АА 123 77', model: 'ЛиАЗ-5292.65', year: 2019, capacity: 100, mileage: '182 450', status: 'active', route: '№ 14А', driver: 'Петров И.В.', lastTo: '15.02.2024' },
-  { id: 2, reg: 'АВ 456 77', model: 'МАЗ-203.069', year: 2020, capacity: 90, mileage: '143 210', status: 'active', route: '№ 7', driver: 'Иванов С.П.', lastTo: '10.03.2024' },
-  { id: 3, reg: 'АМ 789 77', model: 'ЛиАЗ-5292.65', year: 2018, capacity: 100, mileage: '224 780', status: 'repair', route: '—', driver: '—', lastTo: '01.03.2024' },
-  { id: 4, reg: 'АО 321 77', model: 'НЕФАЗ-5299', year: 2021, capacity: 112, mileage: '98 340', status: 'active', route: '№ 3', driver: 'Козлов Д.Н.', lastTo: '20.02.2024' },
-  { id: 5, reg: 'АП 654 77', model: 'Volgabus 5270', year: 2022, capacity: 88, mileage: '54 120', status: 'active', route: '№ 9', driver: 'Морозов А.С.', lastTo: '05.03.2024' },
-  { id: 6, reg: 'АР 987 77', model: 'ЛиАЗ-6213', year: 2017, capacity: 120, mileage: '298 560', status: 'to', route: '—', driver: '—', lastTo: '12.03.2024' },
-  { id: 7, reg: 'АС 111 77', model: 'МАЗ-203.069', year: 2020, capacity: 90, mileage: '156 890', status: 'active', route: '№ 22Б', driver: 'Фокин В.А.', lastTo: '01.02.2024' },
-  { id: 8, reg: 'АТ 222 77', model: 'НЕФАЗ-5299', year: 2019, capacity: 112, mileage: '201 340', status: 'park', route: '—', driver: '—', lastTo: '28.02.2024' },
-];
+const fleet: {
+  id: number; reg: string; model: string; year: number;
+  capacity: number; mileage: string; status: string;
+  route: string; driver: string; lastTo: string;
+}[] = [];
 
 const statusMap: Record<string, { label: string; cls: string }> = {
   active: { label: 'На маршруте', cls: 'badge-green' },
@@ -29,20 +24,12 @@ export default function Fleet() {
     return matchSearch && matchStatus;
   });
 
-  const counts = {
-    total: fleet.length,
-    active: fleet.filter(v => v.status === 'active').length,
-    repair: fleet.filter(v => v.status === 'repair').length,
-    to: fleet.filter(v => v.status === 'to').length,
-    park: fleet.filter(v => v.status === 'park').length,
-  };
-
   return (
     <div className="space-y-5 animate-fade-in">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-bold text-foreground">Подвижной состав</h2>
-          <p className="text-sm text-muted-foreground">Всего {counts.total} единиц техники</p>
+          <p className="text-sm text-muted-foreground">Всего {fleet.length} единиц техники</p>
         </div>
         <button
           className="flex items-center gap-2 px-4 py-2 rounded text-sm font-medium text-white"
@@ -55,13 +42,13 @@ export default function Fleet() {
 
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {[
-          { label: 'На маршруте', value: counts.active, color: 'hsl(142 71% 35%)', bg: 'hsl(142 71% 95%)' },
-          { label: 'В парке', value: counts.park, color: 'hsl(213 78% 35%)', bg: 'hsl(213 78% 95%)' },
-          { label: 'На ТО', value: counts.to, color: 'hsl(32 85% 40%)', bg: 'hsl(32 85% 95%)' },
-          { label: 'Неисправны', value: counts.repair, color: 'hsl(0 72% 45%)', bg: 'hsl(0 72% 95%)' },
+          { label: 'На маршруте', value: 0, color: 'hsl(142 71% 35%)', bg: 'white' },
+          { label: 'В парке', value: 0, color: 'hsl(213 78% 35%)', bg: 'white' },
+          { label: 'На ТО', value: 0, color: 'hsl(38 90% 40%)', bg: 'white' },
+          { label: 'Неисправны', value: 0, color: 'hsl(0 72% 45%)', bg: 'white' },
         ].map((s) => (
           <div key={s.label} className="bg-white border border-border rounded-lg px-4 py-3 flex items-center gap-3" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
-            <div className="text-2xl font-bold" style={{ color: s.color }}>{s.value}</div>
+            <div className="text-2xl font-bold" style={{ color: 'hsl(140 15% 75%)' }}>0</div>
             <div className="text-xs text-muted-foreground">{s.label}</div>
           </div>
         ))}
@@ -92,48 +79,52 @@ export default function Fleet() {
           </select>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full data-table">
-            <thead>
-              <tr>
-                <th>Госномер</th>
-                <th>Модель</th>
-                <th>Год</th>
-                <th>Вместимость</th>
-                <th>Пробег, км</th>
-                <th>Маршрут</th>
-                <th>Водитель</th>
-                <th>Последнее ТО</th>
-                <th>Статус</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((v) => (
-                <tr key={v.id}>
-                  <td>
-                    <span className="font-mono-ibm font-semibold text-sm">{v.reg}</span>
-                  </td>
-                  <td>{v.model}</td>
-                  <td>{v.year}</td>
-                  <td>{v.capacity} чел.</td>
-                  <td className="font-mono-ibm text-xs">{v.mileage}</td>
-                  <td className="font-medium">{v.route}</td>
-                  <td className="text-sm">{v.driver}</td>
-                  <td className="font-mono-ibm text-xs text-muted-foreground">{v.lastTo}</td>
-                  <td>
-                    <span className={statusMap[v.status].cls}>{statusMap[v.status].label}</span>
-                  </td>
-                  <td>
-                    <button className="p-1.5 rounded hover:bg-muted transition-colors">
-                      <Icon name="MoreHorizontal" size={14} className="text-muted-foreground" />
-                    </button>
-                  </td>
+        {filtered.length === 0 ? (
+          <div className="py-20 text-center">
+            <Icon name="Bus" size={40} className="mx-auto mb-3" style={{ color: 'hsl(140 15% 80%)' }} />
+            <p className="text-sm text-muted-foreground font-medium">Транспортные средства не добавлены</p>
+            <p className="text-xs mt-1" style={{ color: 'hsl(140 15% 65%)' }}>Нажмите «Добавить ТС», чтобы внести первый автобус</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full data-table">
+              <thead>
+                <tr>
+                  <th>Госномер</th>
+                  <th>Модель</th>
+                  <th>Год</th>
+                  <th>Вместимость</th>
+                  <th>Пробег, км</th>
+                  <th>Маршрут</th>
+                  <th>Водитель</th>
+                  <th>Последнее ТО</th>
+                  <th>Статус</th>
+                  <th></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {filtered.map((v) => (
+                  <tr key={v.id}>
+                    <td><span className="font-mono-ibm font-semibold text-sm">{v.reg}</span></td>
+                    <td>{v.model}</td>
+                    <td>{v.year}</td>
+                    <td>{v.capacity} чел.</td>
+                    <td className="font-mono-ibm text-xs">{v.mileage}</td>
+                    <td className="font-medium">{v.route}</td>
+                    <td className="text-sm">{v.driver}</td>
+                    <td className="font-mono-ibm text-xs text-muted-foreground">{v.lastTo}</td>
+                    <td><span className={statusMap[v.status]?.cls ?? 'badge-blue'}>{statusMap[v.status]?.label ?? v.status}</span></td>
+                    <td>
+                      <button className="p-1.5 rounded hover:bg-muted transition-colors">
+                        <Icon name="MoreHorizontal" size={14} className="text-muted-foreground" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   );

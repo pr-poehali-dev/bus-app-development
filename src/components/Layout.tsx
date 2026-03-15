@@ -8,6 +8,7 @@ interface LayoutProps {
   activePage: Page;
   onNavigate: (page: Page) => void;
   onLogout: () => void;
+  username: string;
 }
 
 const navItems = [
@@ -18,7 +19,7 @@ const navItems = [
   { id: 'reports' as Page, label: 'Отчёты', icon: 'FileText' },
 ];
 
-export default function Layout({ children, activePage, onNavigate, onLogout }: LayoutProps) {
+export default function Layout({ children, activePage, onNavigate, onLogout, username }: LayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const currentDate = new Date().toLocaleDateString('ru-RU', {
@@ -47,13 +48,13 @@ export default function Layout({ children, activePage, onNavigate, onLogout }: L
             <Icon name="Bus" size={16} className="text-white" />
           </div>
           <div>
-            <div className="font-bold text-white text-sm leading-tight">АвтоПарк</div>
+            <div className="font-bold text-white text-sm leading-tight">ПриволжскТранс</div>
             <div className="text-xs" style={{ color: 'hsl(var(--sidebar-foreground))' }}>Система управления</div>
           </div>
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
-          <div className="text-xs font-semibold uppercase tracking-widest mb-3 px-3" style={{ color: 'hsl(215 20% 40%)' }}>
+          <div className="text-xs font-semibold uppercase tracking-widest mb-3 px-3" style={{ color: 'hsl(142 15% 38%)' }}>
             Навигация
           </div>
           {navItems.map((item) => (
@@ -70,12 +71,12 @@ export default function Layout({ children, activePage, onNavigate, onLogout }: L
 
         <div className="px-3 py-4 border-t" style={{ borderColor: 'hsl(var(--sidebar-border))' }}>
           <div className="flex items-center gap-3 px-3 py-2 mb-2">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style={{ background: 'hsl(var(--primary))' }}>
-              АД
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white flex-shrink-0" style={{ background: 'hsl(var(--primary))' }}>
+              {username.slice(0, 2).toUpperCase()}
             </div>
-            <div>
-              <div className="text-xs font-semibold text-white">Администратор</div>
-              <div className="text-xs" style={{ color: 'hsl(215 20% 45%)' }}>Диспетчер</div>
+            <div className="min-w-0">
+              <div className="text-xs font-semibold text-white truncate">{username}</div>
+              <div className="text-xs" style={{ color: 'hsl(142 15% 42%)' }}>Диспетчер</div>
             </div>
           </div>
           <button

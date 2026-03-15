@@ -11,13 +11,13 @@ import Reports from '@/pages/Reports';
 type Page = 'dashboard' | 'employees' | 'fleet' | 'routes' | 'reports';
 
 export default function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState('');
   const [page, setPage] = useState<Page>('dashboard');
 
-  if (!isLoggedIn) {
+  if (!username) {
     return (
       <TooltipProvider>
-        <LoginPage onLogin={() => setIsLoggedIn(true)} />
+        <LoginPage onLogin={(name) => setUsername(name)} />
       </TooltipProvider>
     );
   }
@@ -35,7 +35,7 @@ export default function App() {
 
   return (
     <TooltipProvider>
-      <Layout activePage={page} onNavigate={setPage} onLogout={() => setIsLoggedIn(false)}>
+      <Layout activePage={page} onNavigate={setPage} onLogout={() => setUsername('')} username={username}>
         {renderPage()}
       </Layout>
     </TooltipProvider>

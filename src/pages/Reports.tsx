@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 
-const routeOptions = ['№ 3', '№ 7', '№ 9', '№ 14А', '№ 22Б', '№ 31', '№ 45'];
-const busOptions = ['АА 123 77', 'АВ 456 77', 'АМ 789 77', 'АО 321 77', 'АП 654 77', 'АР 987 77', 'АС 111 77', 'АТ 222 77'];
+const routeOptions: string[] = [];
+const busOptions: string[] = [];
 
 interface ReportEntry {
   id: number;
@@ -12,15 +12,7 @@ interface ReportEntry {
   passengers: string;
   links: string;
   date: string;
-  driver: string;
 }
-
-const savedReports: ReportEntry[] = [
-  { id: 1, route: '№ 14А', bus: 'АА 123 77', trips: '12', passengers: '1 248', links: '14', date: '14.03.2024', driver: 'Петров И.В.' },
-  { id: 2, route: '№ 7', bus: 'АВ 456 77', trips: '14', passengers: '1 560', links: '16', date: '14.03.2024', driver: 'Иванов С.П.' },
-  { id: 3, route: '№ 9', bus: 'АП 654 77', trips: '16', passengers: '1 920', links: '18', date: '13.03.2024', driver: 'Морозов А.С.' },
-  { id: 4, route: '№ 3', bus: 'АО 321 77', trips: '18', passengers: '2 160', links: '20', date: '13.03.2024', driver: 'Козлов Д.Н.' },
-];
 
 export default function Reports() {
   const [route, setRoute] = useState('');
@@ -30,6 +22,7 @@ export default function Reports() {
   const [links, setLinks] = useState('');
   const [saved, setSaved] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [savedReports, setSavedReports] = useState<ReportEntry[]>([]);
 
   const validate = () => {
     const e: Record<string, string> = {};
@@ -37,7 +30,6 @@ export default function Reports() {
     if (!bus) e.bus = 'Выберите автомобиль';
     if (!trips) e.trips = 'Введите количество';
     if (!passengers) e.passengers = 'Введите количество';
-    if (!links) e.links = 'Введите количество';
     return e;
   };
 
@@ -48,6 +40,16 @@ export default function Reports() {
       return;
     }
     setErrors({});
+    const newReport: ReportEntry = {
+      id: Date.now(),
+      route,
+      bus,
+      trips,
+      passengers,
+      links,
+      date: new Date().toLocaleDateString('ru-RU'),
+    };
+    setSavedReports(prev => [newReport, ...prev]);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
     setRoute('');
@@ -67,7 +69,7 @@ export default function Reports() {
   };
 
   const fieldClass = (field: string) =>
-    `w-full px-3 py-2.5 text-sm border rounded outline-none transition-all ${errors[field] ? 'border-red-400 focus:border-red-400' : 'border-border focus:border-blue-500'}`;
+    `w-full px-3 py-2.5 text-sm border rounded outline-none transition-all ${errors[field] ? 'border-red-400 focus:border-red-400' : 'border-border focus:border-green-600'}`;
 
   return (
     <div className="space-y-5 animate-fade-in">
@@ -110,6 +112,9 @@ export default function Reports() {
                     ))}
                   </select>
                   {errors.route && <p className="text-xs text-red-500 mt-1">{errors.route}</p>}
+                  {routeOptions.length === 0 && (
+                    <p className="text-xs mt-1" style={{ color: 'hsl(140 15% 60%)' }}>Добавьте маршруты в разделе «Маршруты»</p>
+                  )}
                 </div>
 
                 <div>
@@ -127,10 +132,13 @@ export default function Reports() {
                     ))}
                   </select>
                   {errors.bus && <p className="text-xs text-red-500 mt-1">{errors.bus}</p>}
+                  {busOptions.length === 0 && (
+                    <p className="text-xs mt-1" style={{ color: 'hsl(140 15% 60%)' }}>Добавьте ТС в разделе «Подвижной состав»</p>
+                  )}
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-semibold text-foreground mb-1.5 uppercase tracking-wide">
                     Кругорейсов <span className="text-red-500">*</span>
@@ -166,24 +174,21 @@ export default function Reports() {
                   </div>
                   {errors.passengers && <p className="text-xs text-red-500 mt-1">{errors.passengers}</p>}
                 </div>
+              </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1.5 uppercase tracking-wide">
-                    Ссылки / Листы <span className="text-red-500">*</span>
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="number"
-                      min="0"
-                      placeholder="0"
-                      value={links}
-                      onChange={(e) => { setLinks(e.target.value); setErrors(prev => ({ ...prev, links: '' })); }}
-                      className={fieldClass('links')}
-                    />
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-muted-foreground">шт.</div>
-                  </div>
-                  {errors.links && <p className="text-xs text-red-500 mt-1">{errors.links}</p>}
-                </div>
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1.5 uppercase tracking-wide">
+                  Ссылки
+                </label>
+                <textarea
+                  rows={3}
+                  placeholder="Вставьте ссылки через Enter&#10;https://example.com/..."
+                  value={links}
+                  onChange={(e) => setLinks(e.target.value)}
+                  className="w-full px-3 py-2.5 text-sm border border-border rounded outline-none transition-all resize-none focus:border-green-600 font-mono-ibm"
+                  style={{ background: 'white' }}
+                />
+                <p className="text-xs mt-1 text-muted-foreground">Можно вставить несколько ссылок, каждую с новой строки</p>
               </div>
 
               {route && bus && trips && passengers && (
@@ -193,8 +198,8 @@ export default function Reports() {
                     {[
                       { label: 'Маршрут', value: route },
                       { label: 'Автобус', value: bus },
-                      { label: 'Кругорейсов', value: trips || '—' },
-                      { label: 'Пассажиров', value: passengers || '—' },
+                      { label: 'Кругорейсов', value: trips },
+                      { label: 'Пассажиров', value: passengers },
                     ].map((item) => (
                       <div key={item.label}>
                         <div className="text-xs text-muted-foreground">{item.label}</div>
@@ -202,6 +207,20 @@ export default function Reports() {
                       </div>
                     ))}
                   </div>
+                  {links && (
+                    <div className="mt-3 pt-3 border-t border-border">
+                      <div className="text-xs text-muted-foreground mb-1">Ссылки:</div>
+                      <div className="space-y-1">
+                        {links.split('\n').filter(l => l.trim()).map((link, i) => (
+                          <a key={i} href={link.trim()} target="_blank" rel="noreferrer"
+                            className="block text-xs font-mono-ibm truncate hover:underline"
+                            style={{ color: 'hsl(var(--primary))' }}>
+                            {link.trim()}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -235,46 +254,52 @@ export default function Reports() {
         <div>
           <div className="bg-white border border-border rounded-lg overflow-hidden" style={{ boxShadow: '0 1px 3px rgba(0,0,0,0.06)' }}>
             <div className="px-5 py-4 border-b border-border" style={{ background: 'hsl(var(--muted))' }}>
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Icon name="History" size={15} className="text-muted-foreground" />
-                  <h3 className="font-semibold text-sm text-foreground">Последние отчёты</h3>
-                </div>
-                <button className="text-xs text-muted-foreground hover:text-foreground">Все →</button>
+              <div className="flex items-center gap-2">
+                <Icon name="History" size={15} className="text-muted-foreground" />
+                <h3 className="font-semibold text-sm text-foreground">Сохранённые отчёты</h3>
               </div>
             </div>
-            <div className="divide-y divide-border">
-              {savedReports.map((r) => (
-                <div key={r.id} className="px-5 py-4 hover:bg-muted/30 transition-colors">
-                  <div className="flex items-start justify-between mb-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded flex items-center justify-center text-xs font-bold text-white" style={{ background: 'hsl(var(--primary))' }}>
-                        {r.route.replace('№ ', '')}
+
+            {savedReports.length === 0 ? (
+              <div className="py-16 text-center">
+                <Icon name="FileText" size={34} className="mx-auto mb-3" style={{ color: 'hsl(140 15% 80%)' }} />
+                <p className="text-sm text-muted-foreground">Нет сохранённых отчётов</p>
+                <p className="text-xs mt-1" style={{ color: 'hsl(140 15% 65%)' }}>Заполните форму и нажмите «Сохранить»</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-border">
+                {savedReports.map((r) => (
+                  <div key={r.id} className="px-5 py-4 hover:bg-muted/30 transition-colors">
+                    <div className="flex items-start justify-between mb-2">
+                      <div className="font-semibold text-sm text-foreground">{r.route}</div>
+                      <span className="text-xs text-muted-foreground font-mono-ibm">{r.date}</span>
+                    </div>
+                    <div className="text-xs text-muted-foreground mb-2">{r.bus}</div>
+                    <div className="grid grid-cols-2 gap-2 mb-2">
+                      <div className="bg-muted rounded px-2 py-1.5 text-center">
+                        <div className="font-bold text-sm text-foreground">{r.trips}</div>
+                        <div className="text-xs text-muted-foreground">рейсов</div>
                       </div>
-                      <div>
-                        <div className="text-sm font-semibold text-foreground">Маршрут {r.route}</div>
-                        <div className="text-xs text-muted-foreground">{r.driver}</div>
+                      <div className="bg-muted rounded px-2 py-1.5 text-center">
+                        <div className="font-bold text-sm text-foreground">{r.passengers}</div>
+                        <div className="text-xs text-muted-foreground">пасс.</div>
                       </div>
                     </div>
-                    <span className="text-xs text-muted-foreground font-mono-ibm">{r.date}</span>
+                    {r.links && (
+                      <div className="space-y-1">
+                        {r.links.split('\n').filter(l => l.trim()).map((link, i) => (
+                          <a key={i} href={link.trim()} target="_blank" rel="noreferrer"
+                            className="block text-xs font-mono-ibm truncate hover:underline"
+                            style={{ color: 'hsl(var(--primary))' }}>
+                            {link.trim()}
+                          </a>
+                        ))}
+                      </div>
+                    )}
                   </div>
-                  <div className="grid grid-cols-3 gap-2">
-                    <div className="bg-muted rounded px-2 py-1.5 text-center">
-                      <div className="font-bold text-sm text-foreground">{r.trips}</div>
-                      <div className="text-xs text-muted-foreground">рейсов</div>
-                    </div>
-                    <div className="bg-muted rounded px-2 py-1.5 text-center">
-                      <div className="font-bold text-sm text-foreground">{r.passengers}</div>
-                      <div className="text-xs text-muted-foreground">пасс.</div>
-                    </div>
-                    <div className="bg-muted rounded px-2 py-1.5 text-center">
-                      <div className="font-bold text-sm text-foreground">{r.links}</div>
-                      <div className="text-xs text-muted-foreground">ссылок</div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </div>

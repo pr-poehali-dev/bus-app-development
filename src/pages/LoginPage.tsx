@@ -2,7 +2,7 @@ import { useState } from 'react';
 import Icon from '@/components/ui/icon';
 
 interface LoginPageProps {
-  onLogin: () => void;
+  onLogin: (name: string) => void;
 }
 
 export default function LoginPage({ onLogin }: LoginPageProps) {
@@ -22,20 +22,20 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
     setError('');
     setTimeout(() => {
       setLoading(false);
-      onLogin();
+      onLogin(login);
     }, 800);
   };
 
   return (
-    <div className="min-h-screen flex" style={{ background: 'hsl(215 40% 14%)' }}>
-      <div className="hidden lg:flex flex-col justify-between w-[420px] p-12" style={{ background: 'hsl(215 45% 10%)' }}>
+    <div className="min-h-screen flex" style={{ background: 'hsl(142 40% 11%)' }}>
+      <div className="hidden lg:flex flex-col justify-between w-[420px] p-12" style={{ background: 'hsl(142 45% 8%)' }}>
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded flex items-center justify-center" style={{ background: 'hsl(var(--accent))' }}>
             <Icon name="Bus" size={18} className="text-white" />
           </div>
           <div>
-            <div className="font-semibold text-white text-sm leading-tight">АвтоПарк</div>
-            <div className="text-xs" style={{ color: 'hsl(215 20% 55%)' }}>Система управления</div>
+            <div className="font-semibold text-white text-sm leading-tight">ПриволжскТранс</div>
+            <div className="text-xs" style={{ color: 'hsl(142 15% 52%)' }}>Система управления</div>
           </div>
         </div>
 
@@ -43,7 +43,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
           <div className="text-3xl font-bold text-white leading-tight mb-4">
             Управление<br />автобусным парком
           </div>
-          <div className="text-sm leading-relaxed mb-8" style={{ color: 'hsl(215 20% 60%)' }}>
+          <div className="text-sm leading-relaxed mb-8" style={{ color: 'hsl(142 15% 58%)' }}>
             Контроль маршрутов, подвижного состава, персонала и формирование оперативной отчётности в едином интерфейсе.
           </div>
           <div className="space-y-3">
@@ -54,17 +54,17 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
               { icon: 'BarChart3', text: 'Оперативные отчёты' },
             ].map((item) => (
               <div key={item.icon} className="flex items-center gap-3">
-                <div className="w-7 h-7 rounded flex items-center justify-center" style={{ background: 'hsl(215 35% 20%)' }}>
+                <div className="w-7 h-7 rounded flex items-center justify-center" style={{ background: 'hsl(142 35% 16%)' }}>
                   <Icon name={item.icon} fallback="Circle" size={14} style={{ color: 'hsl(var(--accent))' }} />
                 </div>
-                <span className="text-sm" style={{ color: 'hsl(215 20% 65%)' }}>{item.text}</span>
+                <span className="text-sm" style={{ color: 'hsl(142 15% 62%)' }}>{item.text}</span>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="text-xs" style={{ color: 'hsl(215 20% 40%)' }}>
-          © 2024 АвтоПарк. Корпоративная система.
+        <div className="text-xs" style={{ color: 'hsl(142 15% 35%)' }}>
+          © 2024 ПриволжскТранс. Корпоративная система.
         </div>
       </div>
 
@@ -75,48 +75,48 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
               <Icon name="Bus" size={18} className="text-white" />
             </div>
             <div>
-              <div className="font-semibold text-white text-sm">АвтоПарк</div>
-              <div className="text-xs" style={{ color: 'hsl(215 20% 55%)' }}>Система управления</div>
+              <div className="font-semibold text-white text-sm">ПриволжскТранс</div>
+              <div className="text-xs" style={{ color: 'hsl(142 15% 52%)' }}>Система управления</div>
             </div>
           </div>
 
           <div className="mb-8">
             <h1 className="text-2xl font-bold text-white mb-1">Вход в систему</h1>
-            <p className="text-sm" style={{ color: 'hsl(215 20% 55%)' }}>Введите ваши учётные данные</p>
+            <p className="text-sm" style={{ color: 'hsl(142 15% 52%)' }}>Введите ваши учётные данные</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'hsl(215 20% 65%)' }}>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: 'hsl(142 15% 62%)' }}>
                 Логин / Табельный номер
               </label>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                  <Icon name="User" size={15} style={{ color: 'hsl(215 20% 45%)' }} />
+                  <Icon name="User" size={15} style={{ color: 'hsl(142 15% 42%)' }} />
                 </div>
                 <input
                   type="text"
                   value={login}
                   onChange={(e) => setLogin(e.target.value)}
-                  placeholder="admin"
+                  placeholder="Введите логин"
                   className="w-full pl-9 pr-4 py-2.5 rounded text-sm text-white placeholder:text-gray-600 outline-none transition-all"
                   style={{
-                    background: 'hsl(215 35% 20%)',
-                    border: '1px solid hsl(215 30% 28%)',
+                    background: 'hsl(142 35% 16%)',
+                    border: '1px solid hsl(142 28% 22%)',
                   }}
                   onFocus={(e) => e.target.style.borderColor = 'hsl(var(--accent))'}
-                  onBlur={(e) => e.target.style.borderColor = 'hsl(215 30% 28%)'}
+                  onBlur={(e) => e.target.style.borderColor = 'hsl(142 28% 22%)'}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium mb-1.5" style={{ color: 'hsl(215 20% 65%)' }}>
+              <label className="block text-xs font-medium mb-1.5" style={{ color: 'hsl(142 15% 62%)' }}>
                 Пароль
               </label>
               <div className="relative">
                 <div className="absolute left-3 top-1/2 -translate-y-1/2">
-                  <Icon name="Lock" size={15} style={{ color: 'hsl(215 20% 45%)' }} />
+                  <Icon name="Lock" size={15} style={{ color: 'hsl(142 15% 42%)' }} />
                 </div>
                 <input
                   type={showPass ? 'text' : 'password'}
@@ -125,17 +125,17 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
                   placeholder="••••••••"
                   className="w-full pl-9 pr-10 py-2.5 rounded text-sm text-white placeholder:text-gray-600 outline-none transition-all"
                   style={{
-                    background: 'hsl(215 35% 20%)',
-                    border: '1px solid hsl(215 30% 28%)',
+                    background: 'hsl(142 35% 16%)',
+                    border: '1px solid hsl(142 28% 22%)',
                   }}
                   onFocus={(e) => e.target.style.borderColor = 'hsl(var(--accent))'}
-                  onBlur={(e) => e.target.style.borderColor = 'hsl(215 30% 28%)'}
+                  onBlur={(e) => e.target.style.borderColor = 'hsl(142 28% 22%)'}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass(!showPass)}
                   className="absolute right-3 top-1/2 -translate-y-1/2"
-                  style={{ color: 'hsl(215 20% 45%)' }}
+                  style={{ color: 'hsl(142 15% 42%)' }}
                 >
                   <Icon name={showPass ? 'EyeOff' : 'Eye'} size={15} />
                 </button>
@@ -153,9 +153,7 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
               type="submit"
               disabled={loading}
               className="w-full py-2.5 rounded text-sm font-semibold text-white transition-all mt-2 flex items-center justify-center gap-2"
-              style={{ background: loading ? 'hsl(213 78% 22%)' : 'hsl(var(--primary))' }}
-              onMouseEnter={(e) => !loading && ((e.target as HTMLButtonElement).style.background = 'hsl(213 78% 22%)')}
-              onMouseLeave={(e) => !loading && ((e.target as HTMLButtonElement).style.background = 'hsl(var(--primary))')}
+              style={{ background: 'hsl(var(--primary))' }}
             >
               {loading ? (
                 <>
@@ -171,8 +169,8 @@ export default function LoginPage({ onLogin }: LoginPageProps) {
             </button>
           </form>
 
-          <div className="mt-6 p-3 rounded text-xs" style={{ background: 'hsl(215 35% 18%)', color: 'hsl(215 20% 50%)' }}>
-            <span className="font-medium" style={{ color: 'hsl(215 20% 65%)' }}>Демо-доступ:</span> любой логин и пароль
+          <div className="mt-6 p-3 rounded text-xs" style={{ background: 'hsl(142 35% 15%)', color: 'hsl(142 15% 48%)' }}>
+            <span className="font-medium" style={{ color: 'hsl(142 15% 62%)' }}>Подсказка:</span> введите любой логин и пароль
           </div>
         </div>
       </div>

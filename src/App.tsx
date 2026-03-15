@@ -1,28 +1,43 @@
+import { useState } from 'react';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import LoginPage from '@/pages/LoginPage';
+import Layout from '@/components/Layout';
+import Dashboard from '@/pages/Dashboard';
+import Employees from '@/pages/Employees';
+import Fleet from '@/pages/Fleet';
+import Routes from '@/pages/Routes';
+import Reports from '@/pages/Reports';
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Index from "./pages/Index";
-import NotFound from "./pages/NotFound";
+type Page = 'dashboard' | 'employees' | 'fleet' | 'routes' | 'reports';
 
-const queryClient = new QueryClient();
+export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [page, setPage] = useState<Page>('dashboard');
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
+  if (!isLoggedIn) {
+    return (
+      <TooltipProvider>
+        <LoginPage onLogin={() => setIsLoggedIn(true)} />
+      </TooltipProvider>
+    );
+  }
+
+  const renderPage = () => {
+    switch (page) {
+      case 'dashboard': return <Dashboard />;
+      case 'employees': return <Employees />;
+      case 'fleet': return <Fleet />;
+      case 'routes': return <Routes />;
+      case 'reports': return <Reports />;
+      default: return <Dashboard />;
+    }
+  };
+
+  return (
     <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
+      <Layout activePage={page} onNavigate={setPage} onLogout={() => setIsLoggedIn(false)}>
+        {renderPage()}
+      </Layout>
     </TooltipProvider>
-  </QueryClientProvider>
-);
-
-export default App;
+  );
+}
